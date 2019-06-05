@@ -3191,6 +3191,222 @@ int _tmain(int argc, _TCHAR* argv[])
 					else {
 						((PlayerInfo*)(event.peer->data))->rawName = PlayerDB::getProperName(((PlayerInfo*)(event.peer->data))->tankIDName);
 #ifdef REGISTRATION
+											{
+						GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnConsoleMessage"), "Registration is not supported yet!"));
+						ENetPacket* packet = enet_packet_create(p.data,
+							p.len,
+							ENET_PACKET_FLAG_RELIABLE);
+						enet_peer_send(peer, 0, packet);
+						delete p.data;
+						//enet_host_flush(server);
+					}
+#endif
+#ifdef REGISTRATION
+					//GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`w" + itemDefs.at(id).name + "``|left|" + std::to_string(id) + "|\n\nadd_spacer|small|\nadd_textbox|" + itemDefs.at(id).description + "|left|\nadd_spacer|small|\nadd_quick_exit|\nadd_button|chc0|Close|noflags|0|0|\nnend_dialog|gazette||OK|"));
+					GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`wCreating an Account``|left|1280|\n\nadd_spacer|small|\nadd_textbox|Welcome to `wGTEU Server`o by creating your Account you will have full access on some of our features!|\nadd_spacer|small|\nadd_textbox|Please kindly make your Username! Reminder : Badwords/Sexual Content words on your name is Illegal!|\nadd_text_input|username|Username :||30|\nadd_text_input|password|Password :||100|\nadd_text_input|passwordverify|Re-Enter Password :||100|\nend_dialog|register|Cancel|Create my Account!|\n"));
+					ENetPacket* packet = enet_packet_create(p.data,
+						p.len,
+						ENET_PACKET_FLAG_RELIABLE);
+					enet_peer_send(peer, 0, packet);
+					delete p.data;
+#endif
+				}
+				string wrenchText = "action|wrench\n|netid|";
+				if (cch.find("action|wrench") == 0)
+				{
+					if (!((PlayerInfo*)(peer->data))->haveGrowId) {
+						continue;
+					}
+
+					std::vector<std::string> id = split(str, '|');
+					string lols = "";
+					string gay = id[3];
+					//add_player_info|" + name + "|" + levels + "|" + std::to_string(blocksbroken) + "|150|
+					if (checkNetIDs2(peer, gay)) {
+						GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|\nadd_player_info|" + ((PlayerInfo*)(peer->data))->displayName + "|" + to_string(((PlayerInfo*)peer->data)->level) + "|" + to_string(((PlayerInfo*)peer->data)->level_xp) + "|" + to_string(((PlayerInfo*)peer->data)->math_level) + " |left|6746|\nadd_label_with_icon|small| |left|6746|\nadd_label_with_icon|small|\nadd_button|account|`wCreate New Account|noflags|0|0| |left|6746|\nadd_label_with_icon|small|\nadd_button|helped|`2HELP!|noflags|0|0| |left|6746|\nadd_label_with_icon|small|`2Longpunch`w and `2Modzoom`w Activated!|left|2072|\nadd_label_with_icon|small| |left|6746|\nadd_label_with_icon|small|`wIf you are at Level 125 please contact a `2Moderator`w or an `9Owner`w to get the `eBlue Name`w!|left|1280|\nadd_label_with_icon|small| |left|6746|\nadd_label_with_icon|small|\nadd_quick_exit|\nadd_button|chc0|Continue|noflags|0|0|\n"));
+						ENetPacket * packet = enet_packet_create(p.data,
+							p.len,
+							ENET_PACKET_FLAG_RELIABLE);
+						enet_peer_send(peer, 0, packet);
+						delete p.data;
+					}
+
+					{
+						ENetPeer* currentPeer;
+						for (currentPeer = server->peers;
+							currentPeer < &server->peers[server->peerCount];
+							++currentPeer)
+						{
+							if (currentPeer->state != ENET_PEER_STATE_CONNECTED)
+								continue;
+							if (currentPeer == peer)
+								continue;
+							if (checkNetIDs2(currentPeer, gay)) {
+								if (find(((PlayerInfo*)(peer->data))->friendinfo.begin(), ((PlayerInfo*)(peer->data))->friendinfo.end(), ((PlayerInfo*)(currentPeer->data))->rawName) != ((PlayerInfo*)(peer->data))->friendinfo.end()) {
+
+									if (isSuperAdmin(((PlayerInfo*)(peer->data))->tankIDName, ((PlayerInfo*)(peer->data))->tankIDPass)) {
+										ENetPeer* currentPeer;
+										for (currentPeer = server->peers;
+											currentPeer < &server->peers[server->peerCount];
+											++currentPeer)
+										{
+											if (currentPeer->state != ENET_PEER_STATE_CONNECTED)
+												continue;
+											if (currentPeer == peer)
+												continue;
+											if (isHere(peer, currentPeer))
+											{
+												if (checkNetIDs2(currentPeer, gay)) {
+
+													WorldInfo info = worldDB.get(((PlayerInfo*)(peer->data))->currentWorld);
+													if (info.owner == ((PlayerInfo*)(peer->data))->tankIDName) {
+														GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`w" + ((PlayerInfo*)(currentPeer->data))->displayName + " `o(`2" + to_string(((PlayerInfo*)(currentPeer->data))->level) + "`o)``|left|18|\n\nadd_spacer|small|\nadd_textbox|`2Player Gems`w: " + to_string(((PlayerInfo*)(currentPeer->data))->gems) + "|left| |left|6746|\nadd_label_with_icon|small|\nadd_button|report|`wReport Player|noflags|0|0| |left|6746|\nadd_label_with_icon|small|\nadd_quick_exit|\nend_dialog|dialogWrenchMenu||Continue|"));
+														ENetPacket * packet = enet_packet_create(p.data,
+															p.len,
+															ENET_PACKET_FLAG_RELIABLE);
+														enet_peer_send(peer, 0, packet);
+														delete p.data;
+													}
+													else {
+
+														GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`w" + ((PlayerInfo*)(currentPeer->data))->displayName + " `o(`2" + to_string(((PlayerInfo*)(currentPeer->data))->level) + "`o)``|left|18|\n\nadd_spacer|small|\nadd_textbox|`2Player Gems`w: " + to_string(((PlayerInfo*)(currentPeer->data))->gems) + "|left| |left|6746|\nadd_label_with_icon|small|\nadd_button|report|`wReport Player|noflags|0|0| |left|6746|\nadd_label_with_icon|small|\nadd_quick_exit|\nend_dialog|dialogWrenchMenu||Continue|"));
+														ENetPacket * packet = enet_packet_create(p.data,
+															p.len,
+															ENET_PACKET_FLAG_RELIABLE);
+														enet_peer_send(peer, 0, packet);
+														delete p.data;
+													}
+												}
+											}
+										}
+									}
+									else {
+										ENetPeer* currentPeer;
+										for (currentPeer = server->peers;
+											currentPeer < &server->peers[server->peerCount];
+											++currentPeer)
+										{
+											if (currentPeer->state != ENET_PEER_STATE_CONNECTED)
+												continue;
+											if (currentPeer == peer)
+												continue;
+											if (isHere(peer, currentPeer))
+											{
+												if (checkNetIDs2(currentPeer, gay)) {
+
+													WorldInfo info = worldDB.get(((PlayerInfo*)(peer->data))->currentWorld);
+													if (info.owner == ((PlayerInfo*)(peer->data))->tankIDName) {
+														GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`w" + ((PlayerInfo*)(currentPeer->data))->displayName + " `o(`2" + to_string(((PlayerInfo*)(currentPeer->data))->level) + "`o)``|left|18|\n\nadd_spacer|small|\nadd_textbox|`2Player Gems`w: " + to_string(((PlayerInfo*)(currentPeer->data))->gems) + "|left| |left|6746|\nadd_label_with_icon|small|\nadd_button|report|`wReport Player|noflags|0|0| |left|6746|\nadd_label_with_icon|small|\nadd_quick_exit|\nend_dialog|dialogWrenchMenu||Continue|"));
+														ENetPacket * packet = enet_packet_create(p.data,
+															p.len,
+															ENET_PACKET_FLAG_RELIABLE);
+														enet_peer_send(peer, 0, packet);
+														delete p.data;
+													}
+													else {
+
+														GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`w" + ((PlayerInfo*)(currentPeer->data))->displayName + " `o(`2" + to_string(((PlayerInfo*)(currentPeer->data))->level) + "`o)``|left|18|\n\nadd_spacer|small|\nadd_textbox|`2Player Gems`w: " + to_string(((PlayerInfo*)(currentPeer->data))->gems) + "|left| |left|6746|\nadd_label_with_icon|small|\nadd_button|report|`wReport Player|noflags|0|0| |left|6746|\nadd_label_with_icon|small|\nadd_quick_exit|\nend_dialog|dialogWrenchMenu||Continue|"));
+														ENetPacket * packet = enet_packet_create(p.data,
+															p.len,
+															ENET_PACKET_FLAG_RELIABLE);
+														enet_peer_send(peer, 0, packet);
+														delete p.data;
+													}
+												}
+											}
+										}
+									}
+								}
+								else {
+									if (getAdminLevel(((PlayerInfo*)(peer->data))->tankIDName, ((PlayerInfo*)(peer->data))->tankIDPass) > 5) {
+										ENetPeer* currentPeer;
+										for (currentPeer = server->peers;
+											currentPeer < &server->peers[server->peerCount];
+											++currentPeer)
+										{
+											if (currentPeer->state != ENET_PEER_STATE_CONNECTED)
+												continue;
+											if (currentPeer == peer)
+												continue;
+											if (isHere(peer, currentPeer))
+											{
+												if (checkNetIDs2(currentPeer, gay)) {
+
+													WorldInfo info = worldDB.get(((PlayerInfo*)(peer->data))->currentWorld);
+													if (info.owner == ((PlayerInfo*)(peer->data))->tankIDName) {
+														GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`w" + ((PlayerInfo*)(currentPeer->data))->displayName + " `o(`2" + to_string(((PlayerInfo*)(currentPeer->data))->level) + "`o)``|left|18|\n\nadd_spacer|small|\nadd_textbox|`2Player Gems`w: " + to_string(((PlayerInfo*)(currentPeer->data))->gems) + "|left| |left|6746|\nadd_label_with_icon|small|\nadd_button|report|`wReport Player|noflags|0|0| |left|6746|\nadd_label_with_icon|small|\nadd_quick_exit|\nend_dialog|dialogWrenchMenu||Continue|"));
+														ENetPacket * packet = enet_packet_create(p.data,
+															p.len,
+															ENET_PACKET_FLAG_RELIABLE);
+														enet_peer_send(peer, 0, packet);
+														delete p.data;
+													}
+													else {
+
+														GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`w" + ((PlayerInfo*)(currentPeer->data))->displayName + " `o(`2" + to_string(((PlayerInfo*)(currentPeer->data))->level) + "`o)``|left|18|\n\nadd_spacer|small|\nadd_textbox|`2Player Gems`w: " + to_string(((PlayerInfo*)(currentPeer->data))->gems) + "|left| |left|6746|\nadd_label_with_icon|small|\nadd_button|report|`wReport Player|noflags|0|0| |left|6746|\nadd_label_with_icon|small|\nadd_quick_exit|\nend_dialog|dialogWrenchMenu||Continue|"));
+														ENetPacket * packet = enet_packet_create(p.data,
+															p.len,
+															ENET_PACKET_FLAG_RELIABLE);
+														enet_peer_send(peer, 0, packet);
+														delete p.data;
+													}
+												}
+											}
+										}
+									}
+									else {
+										ENetPeer* currentPeer;
+										for (currentPeer = server->peers;
+											currentPeer < &server->peers[server->peerCount];
+											++currentPeer)
+										{
+											if (currentPeer->state != ENET_PEER_STATE_CONNECTED)
+												continue;
+											if (currentPeer == peer)
+												continue;
+											if (isHere(peer, currentPeer))
+											{
+												if (checkNetIDs2(currentPeer, gay)) {
+
+													WorldInfo info = worldDB.get(((PlayerInfo*)(peer->data))->currentWorld);
+													if (info.owner == ((PlayerInfo*)(peer->data))->tankIDName) {
+														GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`w" + ((PlayerInfo*)(currentPeer->data))->displayName + " `o(`2" + to_string(((PlayerInfo*)(currentPeer->data))->level) + "`o)``|left|18|\n\nadd_spacer|small|\nadd_textbox|`2Player Gems`w: " + to_string(((PlayerInfo*)(currentPeer->data))->gems) + "|left| |left|6746|\nadd_label_with_icon|small|\nadd_button|report|`wReport Player|noflags|0|0| |left|6746|\nadd_label_with_icon|small|\nadd_quick_exit|\nend_dialog|dialogWrenchMenu||Continue|"));
+														ENetPacket * packet = enet_packet_create(p.data,
+															p.len,
+															ENET_PACKET_FLAG_RELIABLE);
+														enet_peer_send(peer, 0, packet);
+														delete p.data;
+													}
+													else {
+
+														GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`o\n\nadd_label_with_icon|big|`w" + ((PlayerInfo*)(currentPeer->data))->displayName + " `o(`2" + to_string(((PlayerInfo*)(currentPeer->data))->level) + "`o)``|left|18|\n\nadd_spacer|small|\nadd_textbox|`2Player Gems`w: " + to_string(((PlayerInfo*)(currentPeer->data))->gems) + "|left| |left|6746|\nadd_label_with_icon|small|\nadd_button|report|`wReport Player|noflags|0|0| |left|6746|\nadd_label_with_icon|small|\nadd_quick_exit|\nend_dialog|dialogWrenchMenu||Continue|"));
+														ENetPacket * packet = enet_packet_create(p.data,
+															p.len,
+															ENET_PACKET_FLAG_RELIABLE);
+														enet_peer_send(peer, 0, packet);
+														delete p.data;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}// for
+					}
+
+				}
+				if (cch.find("action|friends") == 0)
+				{
+					GamePacket p2 = packetEnd(appendString(appendString(createPacket(), "OnDialogRequest"), "set_default_color|`w\n\nadd_label_with_icon|big|Social Portal``|left|1366|\n\nadd_spacer|small|\nadd_button|backonlinelist|Show Friends``|0|0|\nadd_button|leader|Show Leaderboard``|0|0|\nend_dialog||OK||\nadd_quick_exit|"));
+					ENetPacket* packet2 = enet_packet_create(p2.data,
+						p2.len,
+						ENET_PACKET_FLAG_RELIABLE);
+
+					enet_peer_send(peer, 0, packet2);
+					delete p2.data;
+
+				}
 						int logStatus = PlayerDB::playerLogin(peer, ((PlayerInfo*)(event.peer->data))->rawName, ((PlayerInfo*)(event.peer->data))->tankIDPass);
 						if (logStatus == 1) {
 							GamePacket p = packetEnd(appendString(appendString(createPacket(), "OnConsoleMessage"), "`rYou have successfully logged into your account!``"));
